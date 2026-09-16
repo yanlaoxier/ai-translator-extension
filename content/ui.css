@@ -1,0 +1,167 @@
+:host {
+  all: initial;
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei UI", sans-serif;
+}
+
+.chip[hidden],
+.card[hidden],
+.panel[hidden],
+.toast[hidden],
+.progress[hidden] {
+  display: none !important;
+}
+
+.chip,
+.card,
+.panel,
+.toast,
+.progress {
+  position: fixed;
+  pointer-events: auto;
+}
+
+.chip {
+  appearance: none;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 999px;
+  background: #13293d;
+  color: #f6f1e4;
+  font: 15px/1 "Palatino Linotype", Palatino, "Songti SC", serif;
+  box-shadow: 0 10px 24px rgba(19, 41, 61, 0.28), inset 0 -3px 0 #e0a437;
+  cursor: pointer;
+}
+
+.card,
+.panel {
+  width: 320px;
+  background: #f7fafc;
+  color: #13293d;
+  border: 1px solid #c9d6df;
+  border-radius: 16px;
+  box-shadow: 0 22px 50px rgba(19, 41, 61, 0.18);
+  padding: 12px;
+}
+
+.panel {
+  top: 16px;
+  right: 16px;
+  width: 360px;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+}
+
+.card-head,
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #4a6572;
+}
+
+.panel-head em {
+  display: block;
+  margin-top: 4px;
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #13293d;
+  font-size: 13px;
+}
+
+.close,
+.copy {
+  appearance: none;
+  border: 1px solid #c9d6df;
+  background: #fff;
+  color: #13293d;
+  border-radius: 8px;
+  cursor: pointer;
+  font: 12px/1.2 "Segoe UI", "PingFang SC", "Microsoft YaHei UI", sans-serif;
+}
+
+.close {
+  width: 24px;
+  height: 24px;
+}
+
+.copy {
+  margin-top: 8px;
+  padding: 7px 10px;
+}
+
+.src,
+.dst,
+.summary,
+.muted,
+.error {
+  margin: 8px 0 0;
+  line-height: 1.55;
+  font-size: 13.5px;
+  white-space: pre-wrap;
+}
+
+.src {
+  color: #4a6572;
+}
+
+.dst,
+.summary {
+  color: #13293d;
+}
+
+.muted {
+  color: #4a6572;
+}
+
+.error {
+  color: #b42318;
+}
+
+.toast {
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: #13293d;
+  color: #f6f1e4;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  box-shadow: 0 10px 24px rgba(19, 41, 61, 0.24);
+}
+
+.toast.err {
+  background: #7f1d1d;
+}
+
+.progress {
+  left: 50%;
+  top: 18px;
+  transform: translateX(-50%);
+  width: min(420px, calc(100vw - 32px));
+  background: #13293d;
+  color: #f6f1e4;
+  border-radius: 999px;
+  overflow: hidden;
+  padding: 8px 12px 10px;
+  font-size: 12px;
+}
+
+.progress span {
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 0;
+  background: #e0a437;
+}
+
+.progress label {
+  position: relative;
+}

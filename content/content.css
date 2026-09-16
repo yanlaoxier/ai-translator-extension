@@ -1,0 +1,27 @@
+.keli-t {
+  text-decoration: underline;
+  text-decoration-color: rgba(224, 164, 55, 0.55);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 2px;
+  cursor: help;
+}
+
+.keli-pair {
+  display: block;
+}
+
+.keli-src {
+  display: inline;
+}
+
+.keli-dst {
+  display: block;
+  margin: 6px 0 10px;
+  padding: 6px 10px;
+  border-left: 3px solid #e0a437;
+  background: rgba(224, 164, 55, 0.08);
+  color: #2d4a5a;
+  border-radius: 0 8px 8px 0;
+  line-height: 1.55;
+  font-size: 0.95em;
+}

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>课利译功能测试页</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "PingFang SC", sans-serif;
+        background: #eef3f7;
+        color: #14283c;
+      }
+      main {
+        max-width: 720px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 32px;
+        border-radius: 20px;
+        box-shadow: 0 16px 40px rgba(20, 40, 60, 0.08);
+      }
+      h1 { margin-top: 0; }
+      .en, .zh, .mix { margin: 24px 0; }
+      a { color: #1f7a6b; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>课利译测试文章</h1>
+      <p id="lead">This page is designed to verify full-page translation, selection translation, and webpage summarization.</p>
+
+      <section class="en">
+        <h2>Why bilingual reading matters</h2>
+        <p>
+          A good translation keeps the author's intent, not just the dictionary meaning of each word.
+          Names, product terms, and source links should stay intact while the surrounding sentences become easy to read.
+        </p>
+        <ul>
+          <li>Preserve proper nouns such as DeepSeek and OpenAI.</li>
+          <li>Keep the original layout, including lists and headings.</li>
+          <li>Visit <a href="https://example.com">example.com</a> for a placeholder link.</li>
+        </ul>
+      </section>
+
+      <section class="zh">
+        <h2>中文段落</h2>
+        <p>
+          划词翻译应当在选中文字后出现一枚小按钮，点击即可看到译文。
+          网页总结需要抓住文章主旨、列出要点，并给读者一句可执行的结论。
+        </p>
+      </section>
+
+      <section class="mix">
+        <h2>Mixed paragraph</h2>
+        <p>
+          Chrome 扩展可以使用 OpenAI 协议调用 DeepSeek。Fill in your API Key and Base URL in the popup, then translate this sentence.
+        </p>
+      </section>
+    </main>
+  </body>
+</html>

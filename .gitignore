@@ -1,0 +1,13 @@
+.DS_Store
+Thumbs.db
+node_modules/
+tmp/
+tmp-chrome-profile/
+*.log
+.env
+.env.local
+.playwright-cli/
+test-results/
+screenshots/
+.idea/
+.vscode/

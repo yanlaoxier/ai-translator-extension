@@ -1,0 +1,13 @@
+{
+  "name": "keli-translate",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "icons": "python scripts/generate-icons.py",
+    "test:api": "node scripts/test-api.mjs",
+    "test:e2e": "node scripts/test-e2e.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}
