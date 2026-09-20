@@ -1,10 +1,22 @@
-import {
+import fs from "fs";
+import vm from "vm";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
+const sandbox = { console, fetch, AbortController, setTimeout, clearTimeout };
+sandbox.globalThis = sandbox;
+sandbox.self = sandbox;
+vm.createContext(sandbox);
+vm.runInContext(fs.readFileSync(path.join(root, "lib/api.js"), "utf8"), sandbox);
+
+const {
   chatCompletions,
   completionsEndpoint,
   extractJsonArray,
   buildTranslateMessages,
   buildSummarizeMessages,
-} from "../lib/api.js";
+} = sandbox.KeliApi;
 
 const apiKey = process.env.KELI_API_KEY;
 const baseUrl = process.env.KELI_BASE_URL || "https://api.deepseek.com";

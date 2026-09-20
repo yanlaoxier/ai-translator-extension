@@ -17,7 +17,17 @@ const HOST_ID = "keli-host";
 let uiCssPromise = null;
 let busy = false;
 
+const PAGE_TYPES = new Set([
+  "KELI_TRANSLATE_PAGE",
+  "KELI_RESTORE_PAGE",
+  "KELI_SUMMARIZE_PAGE",
+  "KELI_TRANSLATE_SELECTION",
+]);
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (!PAGE_TYPES.has(message?.type)) {
+    return false;
+  }
   handlePageMessage(message)
     .then((result) => sendResponse({ ok: true, result }))
     .catch((error) => sendResponse({ ok: false, error: error.message || String(error) }));
@@ -84,11 +94,6 @@ async function send(type, payload) {
   return response.result;
 }
 
-function detectTarget(text, preferred) {
-  if (preferred === "zh" || preferred === "en") return preferred;
-  return /[\u4e00-\u9fff]/.test(text) ? "en" : "zh";
-}
-
 async function translateSelection(fromHotkey = false) {
   const text = selectedText();
   if (!text) {
@@ -97,14 +102,17 @@ async function translateSelection(fromHotkey = false) {
   }
 
   const settings = await send("GET_SETTINGS");
-  const targetLang = detectTarget(text, settings.targetLang);
   const rect = selectionRect() || { left: 24, top: 24, bottom: 48, right: 160 };
   showCard(rect, { loading: true, source: text });
 
   try {
     const [translated] = await send("TRANSLATE_TEXTS", {
       texts: [text],
-      targetLang,
+      sourceLang: settings.sourceLang,
+      targetLang: settings.targetLang,
+      kind: "selection",
+      title: document.title,
+      url: location.href,
     });
     showCard(rect, { source: text, translated: translated || "" });
   } catch (error) {
@@ -199,10 +207,17 @@ function restorePage() {
 function alreadyInTarget(text, targetLang) {
   const cjk = (text.match(/[\u4e00-\u9fff]/g) || []).length;
   const latin = (text.match(/[A-Za-z]/g) || []).length;
-  if (targetLang === "zh") {
-    return cjk >= 4 && cjk >= latin;
+  const kana = (text.match(/[\u3040-\u30ff]/g) || []).length;
+  const hangul = (text.match(/[\uac00-\ud7af]/g) || []).length;
+  const cyr = (text.match(/[\u0400-\u04ff]/g) || []).length;
+  if (targetLang === "zh") return cjk >= 4 && cjk >= latin && kana < 2 && hangul < 2;
+  if (targetLang === "ja") return kana >= 2 || (cjk >= 4 && kana >= 1);
+  if (targetLang === "ko") return hangul >= 4;
+  if (targetLang === "ru") return cyr >= 6;
+  if (["en", "fr", "de", "es"].includes(targetLang)) {
+    return latin >= 8 && latin > cjk * 2 && hangul === 0;
   }
-  return latin >= 8 && latin > cjk * 2;
+  return false;
 }
 
 async function translatePage() {
@@ -230,7 +245,11 @@ async function translatePage() {
       if (!sliceTexts.length) continue;
       const translated = await send("TRANSLATE_TEXTS", {
         texts: sliceTexts,
+        sourceLang: settings.sourceLang,
         targetLang: settings.targetLang,
+        kind: "page",
+        title: document.title,
+        url: location.href,
       });
       sliceNodes.forEach((node, index) => {
         if (!node.isConnected) return;

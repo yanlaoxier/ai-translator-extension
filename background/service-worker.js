@@ -1,5 +1,18 @@
-import { chatCompletions, extractJsonArray, buildTranslateMessages, buildSummarizeMessages } from "../lib/api.js";
-import { getSettings, saveSettings } from "../lib/storage.js";
+importScripts("../lib/api.js", "../lib/storage.js");
+
+const { chatCompletions, extractJsonArray, buildTranslateMessages, buildSummarizeMessages } = self.KeliApi;
+const {
+  getSettings,
+  saveSettings,
+  getHistory,
+  appendHistory,
+  clearHistory,
+  getUsage,
+  addUsage,
+  resetUsage,
+  extractUsage,
+  clipText,
+} = self.KeliStorage;
 
 const BATCH_CHAR_LIMIT = 3500;
 
@@ -14,7 +27,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return true;
 });
 
-async function handleMessage(message) {
+async function handleMessage(message, sender) {
   switch (message?.type) {
     case "GET_SETTINGS":
       return getSettings();
@@ -23,11 +36,22 @@ async function handleMessage(message) {
     case "TEST_CONNECTION":
       return testConnection(message.payload);
     case "TRANSLATE_TEXTS":
-      return translateTexts(message.payload || {});
+      return translateTexts(message.payload || {}, sender);
     case "SUMMARIZE":
-      return summarizePage(message.payload || {});
+      return summarizePage(message.payload || {}, sender);
+    case "GET_HISTORY":
+      return getHistory();
+    case "CLEAR_HISTORY":
+      return clearHistory();
+    case "GET_USAGE":
+      return getUsage();
+    case "RESET_USAGE":
+      return resetUsage();
+    case "OPEN_PANEL":
+      await chrome.runtime.openOptionsPage();
+      return true;
     default:
-      throw new Error("未知请求");
+      return null;
   }
 }
 
@@ -37,14 +61,36 @@ async function resolveConfig(override = {}) {
     apiKey: override.apiKey ?? settings.apiKey,
     baseUrl: override.baseUrl ?? settings.baseUrl,
     model: override.model ?? settings.model,
+    sourceLang: override.sourceLang ?? settings.sourceLang ?? "auto",
     targetLang: override.targetLang ?? settings.targetLang,
     bilingual: settings.bilingual,
   };
 }
 
+function mergeUsage(parts) {
+  return parts.reduce(
+    (sum, item) => ({
+      prompt_tokens: sum.prompt_tokens + (item?.prompt_tokens || 0),
+      completion_tokens: sum.completion_tokens + (item?.completion_tokens || 0),
+      total_tokens: sum.total_tokens + (item?.total_tokens || 0),
+    }),
+    { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+  );
+}
+
+async function record(entry, usage) {
+  if (usage?.total_tokens || usage?.prompt_tokens) {
+    await addUsage(usage);
+  }
+  await appendHistory({
+    ...entry,
+    usage: usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+  });
+}
+
 async function testConnection(override = {}) {
   const config = await resolveConfig(override);
-  const { text } = await chatCompletions({
+  const result = await chatCompletions({
     ...config,
     temperature: 0,
     timeoutMs: 20_000,
@@ -55,7 +101,9 @@ async function testConnection(override = {}) {
       },
     ],
   });
-  return { reply: text.trim(), model: config.model };
+  const usage = result.usage || extractUsage(result.raw);
+  await addUsage(usage);
+  return { reply: result.text.trim(), model: config.model, usage };
 }
 
 function chunkBySize(texts, limit) {
@@ -81,7 +129,7 @@ function chunkBySize(texts, limit) {
   return batches;
 }
 
-async function translateTexts(payload) {
+async function translateTexts(payload, sender) {
   const texts = Array.isArray(payload.texts) ? payload.texts.map((item) => String(item ?? "")) : [];
   if (!texts.length) {
     return [];
@@ -90,22 +138,25 @@ async function translateTexts(payload) {
   const config = await resolveConfig(payload);
   const output = new Array(texts.length).fill("");
   const batches = chunkBySize(texts, BATCH_CHAR_LIMIT);
+  const usages = [];
 
   for (const batch of batches) {
-    const { text } = await chatCompletions({
+    const result = await chatCompletions({
       ...config,
       temperature: 0.2,
       messages: buildTranslateMessages(
         batch.map((item) => item.text),
         config.targetLang,
+        config.sourceLang,
       ),
     });
+    usages.push(result.usage || extractUsage(result.raw));
 
     let translated;
     try {
-      translated = extractJsonArray(text);
+      translated = extractJsonArray(result.text);
     } catch {
-      translated = batch.length === 1 ? [text.trim()] : batch.map(() => text.trim());
+      translated = batch.length === 1 ? [result.text.trim()] : batch.map(() => result.text.trim());
     }
 
     batch.forEach((item, offset) => {
@@ -114,10 +165,26 @@ async function translateTexts(payload) {
     });
   }
 
+  const usage = mergeUsage(usages);
+  const kind = payload.kind || (texts.length === 1 ? "selection" : "page");
+  await record(
+    {
+      type: kind,
+      sourceLang: config.sourceLang,
+      targetLang: config.targetLang,
+      source: clipText(texts.join("\n"), 360),
+      result: clipText(output.join("\n"), 360),
+      title: payload.title || sender?.tab?.title || "",
+      url: payload.url || sender?.tab?.url || "",
+      count: texts.length,
+    },
+    usage,
+  );
+
   return output;
 }
 
-async function summarizePage(payload) {
+async function summarizePage(payload, sender) {
   const config = await resolveConfig(payload);
   const text = String(payload.text || "").replace(/\s+\n/g, "\n").trim();
   if (!text) {
@@ -125,7 +192,7 @@ async function summarizePage(payload) {
   }
 
   const clipped = text.length > 12_000 ? `${text.slice(0, 12_000)}\n\n[正文已截断]` : text;
-  const { text: summary } = await chatCompletions({
+  const result = await chatCompletions({
     ...config,
     temperature: 0.3,
     timeoutMs: 90_000,
@@ -139,5 +206,20 @@ async function summarizePage(payload) {
     ),
   });
 
-  return summary.trim();
+  const summary = result.text.trim();
+  const usage = result.usage || extractUsage(result.raw);
+  await record(
+    {
+      type: "summary",
+      sourceLang: config.sourceLang,
+      targetLang: config.targetLang,
+      source: clipText(clipped, 360),
+      result: clipText(summary, 360),
+      title: payload.title || sender?.tab?.title || "",
+      url: payload.url || sender?.tab?.url || payload.url || "",
+    },
+    usage,
+  );
+
+  return summary;
 }

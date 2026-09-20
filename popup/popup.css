@@ -175,9 +175,16 @@ body {
 }
 
 .hint {
-  margin: 0 0 14px;
+  margin: 0 0 10px;
   color: var(--slate);
   font-size: 12px;
+}
+
+.btn.link {
+  width: 100%;
+  margin-bottom: 14px;
+  background: transparent;
+  border-style: dashed;
 }
 
 kbd {

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<!-- 本文件是开发预览页：由 panel/panel.html 的副本 + Chrome API mock 组成，仅供浏览器预览，不参与扩展打包。 -->
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>课利译 · 管理台（预览 Mock）</title>
+    <link rel="stylesheet" href="../panel/panel.css" />
+    <style>
+      .preview-banner {
+        position: fixed;
+        left: 12px;
+        bottom: 12px;
+        z-index: 9999;
+        font: 12px/1.6 system-ui, sans-serif;
+        color: #666;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 6px 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      }
+      .preview-banner button {
+        margin-left: 8px;
+        cursor: pointer;
+      }
+    </style>
+    <script>
+      // —— Chrome 扩展 API Mock（localStorage 可用则持久化，不可用则退化为内存）——
+      (function () {
+        const safeGet = () => {
+          try {
+            return JSON.parse(localStorage.getItem("keliMockState") || "null");
+          } catch {
+            return null;
+          }
+        };
+        const safeSet = (v) => {
+          try {
+            localStorage.setItem("keliMockState", JSON.stringify(v));
+          } catch {
+            /* 沙箱环境下忽略 */
+          }
+        };
+        const day = (offset) => {
+          const d = new Date();
+          d.setDate(d.getDate() - offset);
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, "0");
+          const dd = String(d.getDate()).padStart(2, "0");
+          return `${y}-${m}-${dd}`;
+        };
+        const now = Date.now();
+        const seed = {
+          apiKey: "sk-demo-1234567890",
+          baseUrl: "https://api.deepseek.com",
+          model: "deepseek-v4-flash",
+          sourceLang: "auto",
+          targetLang: "zh",
+          bilingual: true,
+          keliHistory: [
+            {
+              id: "demo-1",
+              at: now - 1000 * 60 * 12,
+              type: "selection",
+              sourceLang: "en",
+              targetLang: "zh",
+              source: "Translation is not about the words alone; it is about carrying meaning across a boundary.",
+              result: "翻译不只是词语的事，而是把意义带过一条边界。",
+              usage: { total_tokens: 96 },
+            },
+            {
+              id: "demo-2",
+              at: now - 1000 * 60 * 60 * 3,
+              type: "page",
+              sourceLang: "en",
+              targetLang: "zh",
+              title: "Transformer Models in 2026 — A Field Guide",
+              result: "本文梳理了 2026 年主流 Transformer 模型的架构演进、训练成本与推理优化手段……",
+              usage: { total_tokens: 12840 },
+            },
+            {
+              id: "demo-3",
+              at: now - 1000 * 60 * 60 * 26,
+              type: "summary",
+              sourceLang: "en",
+              targetLang: "zh",
+              title: "The State of Open Web Standards",
+              result: "要点：1) 互操作标准持续收敛 2) 浏览器实现差距缩小 3) 新 API 以渐进增强为主。",
+              usage: { total_tokens: 5320 },
+            },
+          ],
+          keliUsage: {
+            promptTokens: 38210,
+            completionTokens: 14650,
+            totalTokens: 52860,
+            requestCount: 42,
+            byDay: {
+              [day(6)]: { tokens: 4200, requests: 3 },
+              [day(5)]: { tokens: 8800, requests: 6 },
+              [day(4)]: { tokens: 3100, requests: 2 },
+              [day(3)]: { tokens: 12400, requests: 11 },
+              [day(2)]: { tokens: 6600, requests: 5 },
+              [day(1)]: { tokens: 9200, requests: 8 },
+              [day(0)]: { tokens: 8560, requests: 7 },
+            },
+          },
+        };
+        let state = safeGet() || seed;
+        const listeners = [];
+        const fire = (changes) => {
+          listeners.forEach((fn) => {
+            try {
+              fn(changes, "local");
+            } catch {
+              /* noop */
+            }
+          });
+        };
+        window.keliMock = {
+          reset() {
+            state = seed;
+            try {
+              localStorage.removeItem("keliMockState");
+            } catch {
+              /* noop */
+            }
+            location.reload();
+          },
+        };
+        window.chrome = {
+          storage: {
+            local: {
+              async get(keys) {
+                const out = {};
+                if (keys == null) {
+                  Object.assign(out, state);
+                } else if (typeof keys === "string") {
+                  if (keys in state) out[keys] = state[keys];
+                } else if (Array.isArray(keys)) {
+                  keys.forEach((k) => {
+                    if (k in state) out[k] = state[k];
+                  });
+                } else {
+                  Object.entries(keys).forEach(([k, d]) => {
+                    out[k] = k in state ? state[k] : d;
+                  });
+                }
+                return out;
+              },
+              async set(items) {
+                const changes = {};
+                Object.entries(items).forEach(([k, v]) => {
+                  changes[k] = { oldValue: state[k], newValue: v };
+                  state[k] = v;
+                });
+                safeSet(state);
+                fire(changes);
+              },
+            },
+            onChanged: {
+              addListener(fn) {
+                listeners.push(fn);
+              },
+            },
+          },
+          runtime: {
+            async sendMessage() {
+              return {
+                ok: true,
+                result: {
+                  model: "deepseek-v4-flash（mock）",
+                  usage: { total_tokens: 23 },
+                },
+              };
+            },
+          },
+        };
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="desk">
+      <aside class="rail">
+        <div class="brand">
+          <div class="seal" aria-hidden="true">课</div>
+          <div>
+            <strong>课利译</strong>
+            <em>管理台</em>
+          </div>
+        </div>
+        <nav>
+          <button type="button" class="nav-btn active" data-view="access">接入</button>
+          <button type="button" class="nav-btn" data-view="language">语言</button>
+          <button type="button" class="nav-btn" data-view="history">历史</button>
+          <button type="button" class="nav-btn" data-view="usage">用量</button>
+        </nav>
+        <p class="rail-note">OpenAI 协议 · 本地保存</p>
+      </aside>
+
+      <main>
+        <header class="top">
+          <div>
+            <p class="eyebrow">阅读账本</p>
+            <h1 id="view-title">模型接入</h1>
+          </div>
+          <span id="status-pill" class="pill">未连接</span>
+        </header>
+
+        <section id="view-access" class="view">
+          <article class="card">
+            <div class="card-head">
+              <h2>接口凭证</h2>
+              <span>只保存在本机浏览器</span>
+            </div>
+            <label class="field">
+              <span>API Key</span>
+              <input id="apiKey" type="password" autocomplete="off" placeholder="sk-…" />
+            </label>
+            <label class="field">
+              <span>Base URL</span>
+              <input id="baseUrl" type="url" placeholder="https://api.deepseek.com" />
+            </label>
+            <label class="field">
+              <span>模型</span>
+              <input id="model" type="text" placeholder="deepseek-v4-flash" />
+            </label>
+            <div class="row">
+              <button type="button" class="btn primary" id="btn-save">保存设置</button>
+              <button type="button" class="btn ghost" id="btn-test">测试连接</button>
+            </div>
+          </article>
+        </section>
+
+        <section id="view-language" class="view" hidden>
+          <article class="card">
+            <div class="card-head">
+              <h2>语言方向</h2>
+              <span>全页翻译、划词与总结都会使用这里的方向</span>
+            </div>
+            <div class="ferry" aria-label="翻译方向">
+              <label class="stamp">
+                <span>原语言</span>
+                <select id="sourceLang"></select>
+              </label>
+              <button type="button" class="swap" id="btn-swap" title="对调语言">⇄</button>
+              <label class="stamp">
+                <span>目标语言</span>
+                <select id="targetLang"></select>
+              </label>
+            </div>
+            <label class="check">
+              <input type="checkbox" id="bilingual" checked />
+              <span>对照显示原文与译文</span>
+            </label>
+            <button type="button" class="btn primary" id="btn-lang-save">保存语言</button>
+          </article>
+        </section>
+
+        <section id="view-history" class="view" hidden>
+          <article class="card">
+            <div class="card-head">
+              <h2>翻译记录</h2>
+              <div class="tools">
+                <select id="history-filter">
+                  <option value="all">全部</option>
+                  <option value="selection">划词</option>
+                  <option value="page">整页</option>
+                  <option value="summary">总结</option>
+                </select>
+                <button type="button" class="btn ghost" id="btn-clear-history">清空记录</button>
+              </div>
+            </div>
+            <div id="history-list" class="ledger"></div>
+          </article>
+        </section>
+
+        <section id="view-usage" class="view" hidden>
+          <article class="card">
+            <div class="card-head">
+              <h2>Token 账本</h2>
+              <button type="button" class="btn ghost" id="btn-reset-usage">清零统计</button>
+            </div>
+            <div class="metrics">
+              <div class="metric">
+                <small>累计消耗</small>
+                <strong id="stat-total">0</strong>
+              </div>
+              <div class="metric">
+                <small>输入 Token</small>
+                <strong id="stat-prompt">0</strong>
+              </div>
+              <div class="metric">
+                <small>输出 Token</small>
+                <strong id="stat-completion">0</strong>
+              </div>
+              <div class="metric">
+                <small>请求次数</small>
+                <strong id="stat-requests">0</strong>
+              </div>
+            </div>
+            <p class="chart-label">近 7 日</p>
+            <div id="usage-chart" class="bars"></div>
+          </article>
+        </section>
+
+        <div id="toast" class="toast" hidden></div>
+      </main>
+    </div>
+
+    <div class="preview-banner">
+      预览模式：chrome.* API 已用 mock 数据模拟
+      <button type="button" onclick="keliMock.reset()">重置示例数据</button>
+    </div>
+
+    <script src="../lib/storage.js"></script>
+    <script src="../panel/panel.js"></script>
+  </body>
+</html>

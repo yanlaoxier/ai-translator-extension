@@ -1,4 +1,4 @@
-import { getSettings, saveSettings } from "../lib/storage.js";
+const { getSettings, saveSettings } = globalThis.KeliStorage;
 
 const els = {
   apiKey: document.getElementById("apiKey"),
@@ -45,6 +45,9 @@ async function init() {
   els.translate.addEventListener("click", () => sendToTab("KELI_TRANSLATE_PAGE"));
   els.restore.addEventListener("click", () => sendToTab("KELI_RESTORE_PAGE"));
   els.summary.addEventListener("click", () => sendToTab("KELI_SUMMARIZE_PAGE"));
+  document.getElementById("btn-panel").addEventListener("click", async () => {
+    await chrome.runtime.openOptionsPage();
+  });
 }
 
 function syncLangButtons() {
@@ -81,7 +84,12 @@ async function onSave() {
 }
 
 async function runtimeSend(type, payload) {
-  const response = await chrome.runtime.sendMessage({ type, payload });
+  let response;
+  try {
+    response = await chrome.runtime.sendMessage({ type, payload });
+  } catch (error) {
+    throw new Error("后台未运行。请打开 chrome://extensions，找到「课利译」后点「重新加载」。");
+  }
   if (!response?.ok) {
     throw new Error(response?.error || "后台无响应");
   }
