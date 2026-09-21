@@ -38,9 +38,9 @@
       <div class="hero__grid">
         <div class="hero__copy">
           <div class="kicker-row">
-            <span class="kicker">v1.4 · 已发布</span>
-            <span class="kicker">支持 36 种语言</span>
-            <span class="status"><span class="status__dot" aria-hidden="true"></span>全部商店已上架</span>
+            <span class="kicker">v1.1.1 · 已发布</span>
+            <span class="kicker">开源 · 兼容 OpenAI 协议</span>
+            <span class="status"><span class="status__dot" aria-hidden="true"></span>GitHub Releases 发布</span>
           </div>
 
           <h1 class="hero__title">
@@ -64,9 +64,7 @@
 
           <ul class="hero__platforms" aria-label="支持的浏览器">
             <li><span class="plat plat--c">C</span> Chrome</li>
-            <li><span class="plat plat--e">E</span> Edge</li>
-            <li><span class="plat plat--f">F</span> Firefox</li>
-            <li><span class="plat plat--s">S</span> Safari 17+</li>
+            <li><span class="plat plat--e">E</span> Edge（Chromium 内核）</li>
           </ul>
         </div>
 
@@ -197,15 +195,15 @@
       <header class="section__head">
         <span class="section__index">04 · 安装</span>
         <h2 class="section__title">三步，把Verso放进浏览器。</h2>
-        <p class="section__lede">不需要注册。装上就能用，第一次打开时再选择目标语言。</p>
+        <p class="section__lede">无需应用商店，从 GitHub Releases 下载安装包，加载后填入自己的 API Key 即可使用。</p>
       </header>
 
       <ol class="steps">
         <li class="step">
           <span class="step__num">01</span>
           <div class="step__body">
-            <h3 class="step__name">前往扩展商店</h3>
-            <p class="step__desc">在 Chrome / Edge / Firefox / Safari 应用商店搜索 <code>Verso</code>，或直接访问以下地址。</p>
+            <h3 class="step__name">下载安装包</h3>
+            <p class="step__desc">前往 GitHub Releases 下载最新版本的 zip 压缩包，解压到本地任意目录。</p>
             <div class="codeblock">
               <span class="codeblock__lang">URL</span>
               <code class="codeblock__code">https://github.com/yanlaoxier/ai-translator-extension/releases/latest</code>
@@ -217,11 +215,11 @@
         <li class="step">
           <span class="step__num">02</span>
           <div class="step__body">
-            <h3 class="step__name">固定到工具栏</h3>
-            <p class="step__desc">点击浏览器右上角的拼图图标 <span class="kbd">⌘</span>，在扩展列表里把Verso固定到工具栏，方便随时调用。</p>
+            <h3 class="step__name">加载扩展</h3>
+            <p class="step__desc">打开 <code>chrome://extensions</code>，开启右上角「开发者模式」，点击「加载已解压的扩展程序」，选择解压后的目录。</p>
             <div class="codeblock">
               <span class="codeblock__lang">SHORTCUT</span>
-              <code class="codeblock__code">⌘ + Shift + Y &nbsp;·&nbsp; 唤起Verso</code>
+              <code class="codeblock__code">Alt + T &nbsp;·&nbsp; 划词翻译</code>
             </div>
           </div>
         </li>
@@ -229,12 +227,12 @@
         <li class="step">
           <span class="step__num">03</span>
           <div class="step__body">
-            <h3 class="step__name">选择你的母语</h3>
-            <p class="step__desc">首次打开时选择目标语言，并按需开启「整页自动译」「快捷键」「本地模型」。</p>
+            <h3 class="step__name">配置 API 与语言</h3>
+            <p class="step__desc">首次打开插件弹窗，填写兼容 OpenAI 协议的 Base URL 与 API Key，并选择目标语言。</p>
             <div class="codeblock">
               <span class="codeblock__lang">CONFIG</span>
-              <code class="codeblock__code">default-target-lang = zh-CN</code>
-              <button class="copy" data-copy="default-target-lang = zh-CN">复制</button>
+              <code class="codeblock__code">API Key 仅存本机 · chrome.storage.local</code>
+              <button class="copy" data-copy="API Key 仅存本机 · chrome.storage.local">复制</button>
             </div>
           </div>
         </li>
