@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0B0E14" />
+  <title>Verso · Web Translator — 为每一页网页，写一行批注</title>
+  <meta name="description" content="Verso 是一款浏览器翻译插件，支持整页翻译、划词译注、网页总结。在你需要的地方，安静地写下一行批注。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Skip link -->
+  <a class="skip" href="#main">跳到正文</a>
+
+  <header class="nav" id="nav">
+    <a class="nav__brand" href="#top" aria-label="Verso Web Translator 主页">
+      <span class="seal" aria-hidden="true">V</span>
+      <span class="nav__text">
+        <span class="nav__name">Verso</span>
+        <span class="nav__sub">Web Translator</span>
+      </span>
+    </a>
+    <nav class="nav__links" aria-label="主导航">
+      <a href="#demo">演示</a>
+      <a href="#features">功能</a>
+      <a href="#install">安装</a>
+      <a href="#faq">问答</a>
+      <a class="nav__cta" href="#install">立即安装</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ============== 01 HERO ============== -->
+    <section class="hero" id="top">
+      <div class="hero__grid">
+        <div class="hero__copy">
+          <div class="kicker-row">
+            <span class="kicker">v1.4 · 已发布</span>
+            <span class="kicker">支持 36 种语言</span>
+            <span class="status"><span class="status__dot" aria-hidden="true"></span>全部商店已上架</span>
+          </div>
+
+          <h1 class="hero__title">
+            <span class="hero__line">为每一段</span>
+            <span class="hero__line"><em>陌生的</em>文字，</span>
+            <span class="hero__line">写一行批注。</span>
+          </h1>
+
+          <p class="hero__lede">
+            Verso 是一款浏览器翻译插件。它把整页翻译、划词译注、网页总结，
+            安静地安放在你正在阅读的那一行旁边——像一本随身的译注本。
+          </p>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="https://verso.app/install">安装扩展</a>
+            <a class="btn btn--ghost" href="#demo">
+              看一次演示
+              <span class="btn__arrow" aria-hidden="true">↓</span>
+            </a>
+          </div>
+
+          <ul class="hero__platforms" aria-label="支持的浏览器">
+            <li><span class="plat plat--c">C</span> Chrome</li>
+            <li><span class="plat plat--e">E</span> Edge</li>
+            <li><span class="plat plat--f">F</span> Firefox</li>
+            <li><span class="plat plat--s">S</span> Safari 17+</li>
+          </ul>
+        </div>
+
+        <!-- Signature element: manuscript card -->
+        <article class="manuscript" aria-label="Verso演示：英文原文与中文旁注">
+          <header class="manuscript__head">
+            <span class="manuscript__source">— On Translation</span>
+            <span class="manuscript__folio">FOLIO · 01</span>
+          </header>
+
+          <div class="manuscript__rule" aria-hidden="true"></div>
+
+          <div class="manuscript__body" lang="en">
+            <p class="phrase" tabindex="0">
+              Translation is not the moving of words from one box to another.
+            </p>
+            <p class="phrase" tabindex="0">
+              It is the re-lighting of the same flame in a different language.
+            </p>
+            <p class="phrase" tabindex="0">
+              The source is fire; the translation is its reflection in water &mdash; no longer the same, and still burning.
+            </p>
+          </div>
+
+          <aside class="manuscript__margin" aria-hidden="true">
+            <p class="margin-note">翻译不是把文字从一个盒子搬到另一个盒子。</p>
+            <p class="margin-note">它是在另一种语言里，重新点亮同一束光。</p>
+            <p class="margin-note">原文是火；译文是它在水中的倒影——不再相同，但仍然在燃烧。</p>
+          </aside>
+
+          <footer class="manuscript__foot">
+            <span class="manuscript__by">Verso · 自动批注</span>
+            <span class="manuscript__time">0.41s · 离线模型</span>
+          </footer>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============== 02 DEMO ============== -->
+    <section class="demo" id="demo">
+      <header class="section__head">
+        <span class="section__index">02 · 演示</span>
+        <h2 class="section__title">读它，像翻一本译注本。</h2>
+        <p class="section__lede">从一段真实的英文开始。点击任一模式，查看Verso如何工作；把鼠标移到任一词上，会出现一行浮动译注。</p>
+      </header>
+
+      <div class="demo__wrap">
+        <div class="demo__bar" role="tablist" aria-label="显示模式">
+          <button class="chip is-active" data-mode="bilingual" role="tab" aria-selected="true">双语对照</button>
+          <button class="chip" data-mode="translated" role="tab" aria-selected="false">仅译文</button>
+          <button class="chip" data-mode="source" role="tab" aria-selected="false">仅原文</button>
+          <span class="demo__hint" aria-live="polite">⌖ &nbsp; 把鼠标移到词上</span>
+        </div>
+
+        <article class="demo__page" id="demoPage" data-mode="bilingual" aria-live="polite">
+          <p>
+            <span class="src">The best <span class="word" data-zh="译者">translators</span> are not those who know two <span class="word" data-zh="语言">languages</span> perfectly, but those who know how to lose themselves in one so they can be reborn in another.</span>
+            <span class="tgt">最好的译者，并不是那些精通两门语言的人，而是那些懂得如何在一门语言中迷失自己、以便在另一门中重生的人。</span>
+          </p>
+          <p>
+            <span class="src">The <span class="word" data-zh="忠实的">faithful</span> translator is a <span class="word" data-zh="神话">myth</span>; what we have instead are careful liars.</span>
+            <span class="tgt">忠实的译者是一个神话；我们真正拥有的，是一群谨慎的谎言者。</span>
+          </p>
+          <p>
+            <span class="src">A good translation is a kind of <span class="word" data-zh="复活">resurrection</span> &mdash; the original lives again, in a body it never wore.</span>
+            <span class="tgt">好的翻译是一种复活——原文在一种它从未穿过的身体里，重新活了过来。</span>
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============== 03 FEATURES ============== -->
+    <section class="features" id="features">
+      <header class="section__head">
+        <span class="section__index">03 · 核心功能</span>
+        <h2 class="section__title">三个动作，覆盖一整页。</h2>
+        <p class="section__lede">你不必为了读懂一页网页，先复制到翻译器，再粘回来。Verso把翻译放在你正在阅读的位置上。</p>
+      </header>
+
+      <div class="features__grid">
+        <article class="feature">
+          <span class="feature__num">01</span>
+          <h3 class="feature__name">全页翻译</h3>
+          <p class="feature__desc">一键把整页文字转换为你的母语。保留版式、链接、图片与排版；段落结构不变。</p>
+          <div class="viz viz--page" aria-hidden="true">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar is-translated"></span>
+            <span class="bar"></span>
+            <span class="bar is-translated"></span>
+            <span class="bar"></span>
+            <span class="bar is-translated"></span>
+          </div>
+        </article>
+
+        <article class="feature">
+          <span class="feature__num">02</span>
+          <h3 class="feature__name">划词译注</h3>
+          <p class="feature__desc">选中任意词、句、段，浮窗立即给出译注、读音、例句。无需切换标签页。</p>
+          <div class="viz viz--pop" aria-hidden="true">
+            <span class="line"></span>
+            <span class="line"></span>
+            <span class="line is-selected">machine learning</span>
+            <span class="line"></span>
+            <div class="popover">
+              <strong>机器学习</strong>
+              <em>n. /məˈʃiːn ˈlɜːrnɪŋ/</em>
+              <span>让计算机从数据中学习规律的方法。</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="feature">
+          <span class="feature__num">03</span>
+          <h3 class="feature__name">网页总结</h3>
+          <p class="feature__desc">把整篇文章压缩成三段要点与一句话摘要。点任何一句，跳回原文对应的位置。</p>
+          <div class="viz viz--sum" aria-hidden="true">
+            <p class="sum-line"><span class="dot"></span>核心论点：翻译不是字对字</p>
+            <p class="sum-line"><span class="dot"></span>三条论据：文化 / 节奏 / 留白</p>
+            <p class="sum-line"><span class="dot"></span>一句话：让另一种"她"重新呼吸</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============== 04 INSTALL ============== -->
+    <section class="install" id="install">
+      <header class="section__head">
+        <span class="section__index">04 · 安装</span>
+        <h2 class="section__title">三步，把Verso放进浏览器。</h2>
+        <p class="section__lede">不需要注册。装上就能用，第一次打开时再选择目标语言。</p>
+      </header>
+
+      <ol class="steps">
+        <li class="step">
+          <span class="step__num">01</span>
+          <div class="step__body">
+            <h3 class="step__name">前往扩展商店</h3>
+            <p class="step__desc">在 Chrome / Edge / Firefox / Safari 应用商店搜索 <code>Verso</code>，或直接访问以下地址。</p>
+            <div class="codeblock">
+              <span class="codeblock__lang">URL</span>
+              <code class="codeblock__code">https://verso.app/install</code>
+              <button class="copy" data-copy="https://verso.app/install">复制</button>
+            </div>
+          </div>
+        </li>
+
+        <li class="step">
+          <span class="step__num">02</span>
+          <div class="step__body">
+            <h3 class="step__name">固定到工具栏</h3>
+            <p class="step__desc">点击浏览器右上角的拼图图标 <span class="kbd">⌘</span>，在扩展列表里把Verso固定到工具栏，方便随时调用。</p>
+            <div class="codeblock">
+              <span class="codeblock__lang">SHORTCUT</span>
+              <code class="codeblock__code">⌘ + Shift + Y &nbsp;·&nbsp; 唤起Verso</code>
+            </div>
+          </div>
+        </li>
+
+        <li class="step">
+          <span class="step__num">03</span>
+          <div class="step__body">
+            <h3 class="step__name">选择你的母语</h3>
+            <p class="step__desc">首次打开时选择目标语言，并按需开启「整页自动译」「快捷键」「本地模型」。</p>
+            <div class="codeblock">
+              <span class="codeblock__lang">CONFIG</span>
+              <code class="codeblock__code">default-target-lang = zh-CN</code>
+              <button class="copy" data-copy="default-target-lang = zh-CN">复制</button>
+            </div>
+          </div>
+        </li>
+      </ol>
+
+      <div class="install__cta">
+        <a class="btn btn--primary btn--lg" href="https://verso.app/install">立即安装</a>
+        <span class="install__note">免费 · 无追踪 · 默认本地</span>
+      </div>
+    </section>
+
+    <!-- ============== 05 FAQ ============== -->
+    <section class="faq" id="faq">
+      <header class="section__head">
+        <span class="section__index">05 · 常见问题</span>
+        <h2 class="section__title">关于Verso的细节。</h2>
+      </header>
+
+      <dl class="faq__list">
+        <div class="faq__item">
+          <dt>Verso会上传我访问的网页吗？</dt>
+          <dd>不会。Verso默认在本地完成译注；只有在你主动开启「云端模型」时才会发起请求，浮窗内会显式标注，可随时关闭。</dd>
+        </div>
+        <div class="faq__item">
+          <dt>支持哪些语言？</dt>
+          <dd>目前支持 36 种主流语言互译，覆盖中文（简/繁）、英、日、韩、法、德、西、俄、阿拉伯、葡萄牙、意大利等。</dd>
+        </div>
+        <div class="faq__item">
+          <dt>在 PDF / 受密码保护的页面能用吗？</dt>
+          <dd>普通网页、RSS 阅读器、邮件网页版均可使用。本地 PDF 文件请使用桌面版Verso（macOS / Windows）。</dd>
+        </div>
+        <div class="faq__item">
+          <dt>团队 / 企业版有什么不同？</dt>
+          <dd>提供术语库、私有部署、SSO、权限管理与审计日志。请邮件联系 <a href="mailto:enterprise@verso.app">enterprise@verso.app</a>。</dd>
+        </div>
+      </dl>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="foot__row foot__row--brand">
+      <span class="seal seal--sm" aria-hidden="true">V</span>
+      <span class="foot__name">Verso</span>
+      <span class="foot__sep" aria-hidden="true">/</span>
+      <span>为每一页网页，写一行批注。</span>
+    </div>
+    <div class="foot__row">
+      <span class="foot__copy">© 2026 Verso · Made with care.</span>
+      <nav class="foot__nav" aria-label="次要导航">
+        <a href="#">隐私</a>
+        <a href="#">条款</a>
+        <a href="#">更新日志</a>
+        <a href="mailto:hi@verso.app">联系</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
