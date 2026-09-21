@@ -4,7 +4,7 @@ Chrome 浏览器 AI 翻译插件：全页面翻译、划词翻译、网页总结
 
 ## 官方网站
 
-👉 <https://github.com/yanlaoxier/ai-translator-website> — 译笺 (Marginalia) 官方宣传站
+👉 <https://yanlaoxier.github.io/ai-translator-extension/> — 译笺 (Marginalia) 官方宣传站（源码在本仓库 `docs/` 目录）
 📝 [Releases & Changelog](https://github.com/yanlaoxier/ai-translator-extension/releases)
 
 ## 安装
