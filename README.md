@@ -2,6 +2,11 @@
 
 Chrome 浏览器 AI 翻译插件：全页面翻译、划词翻译、网页总结。兼容 OpenAI 协议，在弹窗中自行填写 API Key 与 Base URL。
 
+## 官方网站
+
+👉 <https://github.com/yanlaoxier/ai-translator-website> — 译笺 (Marginalia) 官方宣传站
+📝 [Releases & Changelog](https://github.com/yanlaoxier/ai-translator-extension/releases)
+
 ## 安装
 
 1. 打开 Chrome，进入 `chrome://extensions`
